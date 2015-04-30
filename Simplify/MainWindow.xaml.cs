@@ -23,25 +23,6 @@ namespace Simplify
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const int WM_APPCOMMAND = 0x319;
-        private const int APPCOMMAND_VOLUME_MUTE = 8;
-        private const int APPCOMMAND_VOLUME_UP = 10;
-        private const int APPCOMMAND_VOLUME_DOWN = 9;
-        private const int APPCOMMAND_MEDIA_PLAY_PAUSE = 14;
-        private const int APPCOMMAND_MEDIA_NEXTTRACK = 11;
-        private const int APPCOMMAND_MEDIA_PREVIOUSTRACK = 12;
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr SendMessageW(IntPtr hWnd, int Msg,
-            IntPtr wParam, IntPtr lParam);
-
-        IntPtr Handle = Process.GetProcessesByName("explorer").First().MainWindowHandle;
-
-        private void AppCommand(int command)
-        {
-            SendMessageW(this.Handle, WM_APPCOMMAND, this.Handle, (IntPtr)(command << 16));
-        }
-
         HelpPopUp popUp;
         Boolean popUpIsOpen = false;
         Timer holdTimer = new Timer(); 
@@ -55,23 +36,16 @@ namespace Simplify
             holdTimer.Elapsed += centerButton_Hold;
         }
 
-
-
         private void backdrop_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
         }
 
-        private void centerButton_Click(object sender, RoutedEventArgs e)
-        {
-            //AppCommand(APPCOMMAND_MEDIA_PLAY_PAUSE);
-        }
-
         private void centerButton_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            AppCommand(APPCOMMAND_MEDIA_NEXTTRACK);
+            AppCommand.MEDIA_NEXTTRACK.Exec();
             //Tell the program to immediately start playing the track
-            AppCommand(APPCOMMAND_MEDIA_PLAY_PAUSE);
+            AppCommand.MEDIA_PLAY_PAUSE.Exec();
             
         }
 
@@ -118,22 +92,16 @@ namespace Simplify
                 //Check if single or double click
                 if (e.ClickCount == 1)
                 {
-                    AppCommand(APPCOMMAND_MEDIA_PLAY_PAUSE);
+                    AppCommand.MEDIA_PLAY_PAUSE.Exec();
                 }
-
-                if (e.ClickCount == 2)
-                {
-                    AppCommand(APPCOMMAND_MEDIA_NEXTTRACK);
-                } 
             }
         }
 
         private void centerButton_Hold(object sender, ElapsedEventArgs e)
         {
-            AppCommand(APPCOMMAND_MEDIA_PREVIOUSTRACK);
-            AppCommand(APPCOMMAND_MEDIA_PREVIOUSTRACK);
+            AppCommand.MEDIA_PREVIOUSTRACK.Exec();
+            AppCommand.MEDIA_PREVIOUSTRACK.Exec();
         }
-
 
     }
 }

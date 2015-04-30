@@ -16,7 +16,6 @@
                 BorderBrush="{x:Null}"  
                 Template="{DynamicResource CenterButtonTemplate}" 
                 Background="{x:Null}" 
-                Click="centerButton_Click"
                 MouseDoubleClick="centerButton_MouseDoubleClick"
                 PreviewMouseDown="centerButton_MouseDown"
                 PreviewMouseUp="centerButton_MouseUp"
