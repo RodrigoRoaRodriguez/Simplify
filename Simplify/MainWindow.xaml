@@ -1,0 +1,29 @@
+﻿<Window x:Class="Simplify.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="237" Width="237" AllowsTransparency="True" WindowStyle="None" Background="Transparent">
+
+
+    <Grid x:Name="backdrop" MouseLeftButtonDown="backdrop_MouseLeftButtonDown">
+        <Grid.Background>
+            <ImageBrush ImageSource="Resources/backdrop.png"/>
+        </Grid.Background>
+        <Button x:Name="centerButton" 
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" 
+                Width="211" 
+                Height="211" 
+                BorderBrush="{x:Null}"  
+                Template="{DynamicResource CenterButtonTemplate}" 
+                Background="{x:Null}" 
+                Click="centerButton_Click"
+                MouseDoubleClick="centerButton_MouseDoubleClick"
+                PreviewMouseDown="centerButton_MouseDown"
+                PreviewMouseUp="centerButton_MouseUp"
+                >
+            <Button Content="Button" Height="100" Width="75"/>
+        </Button>
+        <Button x:Name="closeButton" Content="Button" HorizontalAlignment="Right" Margin="0,10,10,0" VerticalAlignment="Top" Width="35" Template="{DynamicResource CloseButtonTemplate}" Height="35" Click="closeButton_Click"/>
+        <Button x:Name="helpButton" Content="Button" HorizontalAlignment="Left" Height="34" Margin="10,0,0,10" VerticalAlignment="Bottom" Width="34" Template="{DynamicResource HelpButtonTemplate}" Click="helpButton_Click"/>
+    </Grid>
+</Window>
