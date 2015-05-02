@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using System.Timers;
+using TI_WindowsLib;
 
 namespace Simplify
 {
@@ -23,6 +24,40 @@ namespace Simplify
     /// </summary>
     public partial class MainWindow : Window
     {
+        // TODO: extract this nested class.
+        private class BLEListener : BLEButtonListener
+        {
+            public BLEListener(BLEButton bleButton)
+            {
+                this.BleButton = bleButton;
+            }
+            public override void OnLeft(BLEButton sender, DateTimeOffset timestamp)
+            {
+                AppCommand.MEDIA_PLAY_PAUSE.Exec();
+                sender.Disconnect();
+                sender.Connect();
+            }
+
+
+            public override void OnRight(BLEButton sender, DateTimeOffset timestamp)
+            {
+                AppCommand.MEDIA_NEXTTRACK.Exec();
+                sender.Disconnect();
+                sender.Connect();
+            }
+
+            public override void OnBoth(BLEButton sender, DateTimeOffset timestamp)
+            {
+                AppCommand.MEDIA_PREVIOUSTRACK.Exec();
+                sender.Disconnect();
+                sender.Connect();
+            }
+
+
+
+            public BLEButton BleButton { get; set; }
+        }
+
         HelpPopUp popUp;
         Boolean popUpIsOpen = false;
         Timer holdTimer = new Timer(); 
@@ -34,6 +69,18 @@ namespace Simplify
             holdTimer.Interval = HOLD_INTERVAL;
             holdTimer.AutoReset = false;
             holdTimer.Elapsed += centerButton_Hold;
+
+            BLEButtonFactory factory = new BLEButtonFactory();
+            factory.Scan();
+            List<BLEButton> buttons = factory.GetAllButtons();
+            if (buttons.Count > 0)
+            {
+                BLEButton bleButton = factory.GetAllButtons()[0];
+                bleButton.Listener = new BLEListener(bleButton);
+                bleButton.Connect();
+                MessageBox.Show("Found a button");
+            }
+
         }
 
         private void backdrop_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
