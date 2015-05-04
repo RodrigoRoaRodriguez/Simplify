@@ -49,6 +49,7 @@ namespace Simplify
             public override void OnBoth(BLEButton sender, DateTimeOffset timestamp)
             {
                 AppCommand.MEDIA_PREVIOUSTRACK.Exec();
+                AppCommand.MEDIA_PLAY_PAUSE.Exec();
                 sender.Disconnect();
                 sender.Connect();
             }
