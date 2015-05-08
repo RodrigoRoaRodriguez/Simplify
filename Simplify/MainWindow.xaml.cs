@@ -34,24 +34,18 @@ namespace Simplify
             public override void OnLeft(BLEButton sender, DateTimeOffset timestamp)
             {
                 AppCommand.MEDIA_PLAY_PAUSE.Exec();
-                sender.Disconnect();
-                sender.Connect();
             }
 
 
             public override void OnRight(BLEButton sender, DateTimeOffset timestamp)
             {
                 AppCommand.MEDIA_NEXTTRACK.Exec();
-                sender.Disconnect();
-                sender.Connect();
             }
 
             public override void OnBoth(BLEButton sender, DateTimeOffset timestamp)
             {
                 AppCommand.MEDIA_PREVIOUSTRACK.Exec();
                 AppCommand.MEDIA_PLAY_PAUSE.Exec();
-                sender.Disconnect();
-                sender.Connect();
             }
 
 
@@ -72,7 +66,6 @@ namespace Simplify
             holdTimer.Elapsed += centerButton_Hold;
 
             BLEButtonFactory factory = new BLEButtonFactory();
-            factory.Scan();
             List<BLEButton> buttons = factory.GetAllButtons();
             if (buttons.Count > 0)
             {
@@ -81,7 +74,6 @@ namespace Simplify
                 bleButton.Connect();
                 MessageBox.Show("Found a button");
             }
-
         }
 
         private void backdrop_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
