@@ -27,46 +27,7 @@ namespace Simplify
     public partial class MainWindow : Window
     {
         // TODO: extract this nested class.
-        private class BLEListener : BLEButtonListener
-        {
-            private Button centerButton;
-            private MainWindow mainWindow;
-
-            public BLEListener(MainWindow mainWindow, Button centerButton)
-            {
-                this.centerButton = centerButton;
-                this.mainWindow = mainWindow;
-            }
-
-            public override void OnLeft(BLEButton sender, DateTimeOffset timestamp)
-            {
-                AppCommand.MEDIA_PLAY_PAUSE.Exec();
-                mainWindow.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    typeof(Button).GetMethod("set_IsPressed", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(centerButton, new object[] { true });
-                }));
-            }
-
-
-            public override void OnRight(BLEButton sender, DateTimeOffset timestamp)
-            {
-                AppCommand.MEDIA_NEXTTRACK.Exec();
-            }
-
-            public override void OnBoth(BLEButton sender, DateTimeOffset timestamp)
-            {
-                AppCommand.MEDIA_PREVIOUSTRACK.Exec();
-                AppCommand.MEDIA_PLAY_PAUSE.Exec();
-            }
-
-            public override void OnUp(BLEButton sender, DateTimeOffset timestamp)
-            {
-                mainWindow.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    typeof(Button).GetMethod("set_IsPressed", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(centerButton, new object[] { false });
-                })); ;
-            }
-        }
+        
 
         HelpPopUp popUp;
         Boolean popUpIsOpen = false;
@@ -85,10 +46,11 @@ namespace Simplify
             if (buttons.Count > 0)
             {
                 BLEButton bleButton = factory.GetAllButtons()[0];
-                bleButton.Listener = new BLEListener(this, centerButton);
+                bleButton.Listener = new BLEListener(centerButton);
                 testConnectivity(bleButton);
             }
             
+
         }
 
         /// <summary>

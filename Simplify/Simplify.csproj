@@ -91,6 +91,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppCommand.cs" />
+    <Compile Include="BLEListener.cs" />
     <Compile Include="HelpPopUp.xaml.cs">
       <DependentUpon>HelpPopUp.xaml</DependentUpon>
     </Compile>
