@@ -16,6 +16,8 @@ using System.Windows.Shapes;
 using System.Runtime.InteropServices;
 using System.Timers;
 using TI_WindowsLib;
+using System.Windows.Automation.Peers;
+using System.Reflection;
 
 namespace Simplify
 {
@@ -27,13 +29,22 @@ namespace Simplify
         // TODO: extract this nested class.
         private class BLEListener : BLEButtonListener
         {
-            public BLEListener(BLEButton bleButton)
+            private Button centerButton;
+            private MainWindow mainWindow;
+
+            public BLEListener(MainWindow mainWindow, Button centerButton)
             {
-                this.BleButton = bleButton;
+                this.centerButton = centerButton;
+                this.mainWindow = mainWindow;
             }
+
             public override void OnLeft(BLEButton sender, DateTimeOffset timestamp)
             {
                 AppCommand.MEDIA_PLAY_PAUSE.Exec();
+                mainWindow.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    typeof(Button).GetMethod("set_IsPressed", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(centerButton, new object[] { true });
+                }));
             }
 
 
@@ -48,9 +59,13 @@ namespace Simplify
                 AppCommand.MEDIA_PLAY_PAUSE.Exec();
             }
 
-
-
-            public BLEButton BleButton { get; set; }
+            public override void OnUp(BLEButton sender, DateTimeOffset timestamp)
+            {
+                mainWindow.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    typeof(Button).GetMethod("set_IsPressed", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(centerButton, new object[] { false });
+                })); ;
+            }
         }
 
         HelpPopUp popUp;
@@ -70,9 +85,20 @@ namespace Simplify
             if (buttons.Count > 0)
             {
                 BLEButton bleButton = factory.GetAllButtons()[0];
-                bleButton.Listener = new BLEListener(bleButton);
-                bleButton.Connect();
-                MessageBox.Show("Found a button");
+                bleButton.Listener = new BLEListener(this, centerButton);
+                testConnectivity(bleButton);
+            }
+            
+        }
+
+        /// <summary>
+        /// Shows a pop-up if a BLE button is around and reachable.
+        /// </summary>
+        private async void testConnectivity(BLEButton bleButton)
+        {
+            if (await bleButton.Connect())
+            {
+                MessageBox.Show("BLE button detected and ready to use!");
             }
         }
 
